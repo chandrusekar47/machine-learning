@@ -67,9 +67,9 @@ def PrintTree(node, prefix=''):
 def ID3(data, features, MIN_GAIN=0.1):
     nPosNeg = [len(filter(data, 0, 'e')), len(filter(data, 0, 'p'))];
     if nPosNeg[0] == len(data):
-        return DtNode(None, nPosNeg, 0, None, None)
+        return DtNode(FeatureVal(0, 'e'), nPosNeg, 0, None, None)
     elif nPosNeg[0] == 0:
-        return DtNode(None, nPosNeg, 0, None, None)
+        return DtNode(FeatureVal(0, 'p'), nPosNeg, 0, None, None)
     max_info_gain = float("-inf")
     max_gain_feature = None
 
@@ -80,7 +80,10 @@ def ID3(data, features, MIN_GAIN=0.1):
             max_gain_feature = feature
 
     if max_info_gain < MIN_GAIN:
-        return DtNode(None, nPosNeg, 0, None, None)
+        if nPosNeg[0] > nPosNeg[1]:
+            return DtNode(FeatureVal(0, 'e'), nPosNeg, 0, None, None)
+        else:
+            return DtNode(FeatureVal(0, 'p'), nPosNeg, 0, None, None)
     left_child_data = filter(data, max_gain_feature.feature, max_gain_feature.value)
     right_child_data = filter(data, max_gain_feature.feature, lambda x:x != max_gain_feature.value)
     return DtNode(max_gain_feature, 
